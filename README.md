@@ -19,6 +19,16 @@ or just use docker
 ``` bash
 $ docker pull tonyapplekim/deepcompressionpytorch
 ```
+## Structure
+
+This project contains files executing the main stages of the Deep Compression procedure described in the above paper.
+1. Pruning
+2. Weight sharing (Quantization)
+3. Huffman encoding
+
+For ease of use, were added:
+- Comparison of performance after each stage with a single command (see below)
+- Decoding of the Huffman coded files (seee below as well)
 
 ## Usage
 Here you find usage recommandations for all three stages of the deep compression described in the paper. Please follow them in the given order.
@@ -76,16 +86,17 @@ This command
 - Runs through all saved models (which thus need to be already compiled)
 - Prints all relevant results for the different stages of the deep compression
 
-For more, type `python huffman_encode.py --help`
+For more, type `python compare_stages.py --help`
 
 ## Huffman Decoding
 ``` bash
-$ python compare_stages.py
+$ python huffman_decode.py
 ```
 
 This command
-- Retrieves a `.ptmodel` file from  the binary encodings contained in the `encodings/` directory
+- Retrieves a `.ptmodel` file from the binary encodings contained in the `encodings/` directory
 
+For more, type `python huffman_decode.py --help`
 
 ## Note
 Note that no pruning nor weight sharing nor Huffman coding were applied for bias values. Maybe it’s better if those are applied to the biases as well, it wasn't tried out yet.

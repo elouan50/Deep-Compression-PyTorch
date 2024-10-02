@@ -8,7 +8,7 @@ This implementation implements three core methods in the paper - Deep Compressio
 
 ## Requirements
 Following packages are required for this project
-- Python3.6+
+- >= Python 3.6
 - tqdm
 - numpy
 - pytorch, torchvision
@@ -21,6 +21,8 @@ $ docker pull tonyapplekim/deepcompressionpytorch
 ```
 
 ## Usage
+Here you find usage recommandations for all three stages of the deep compression described in the paper. Please follow them in the given order.
+
 ### Pruning
 ``` bash
 $ python pruning.py
@@ -38,6 +40,7 @@ You can control other values such as
 - batch size
 - learning rate
 - and others
+
 For more, type `python pruning.py --help`
 
 ### Weight sharing
@@ -51,6 +54,8 @@ This command
 - This modified model is saved to
 `saves/model_after_weight_sharing.ptmodel`
 
+For more, type `python weight_share.py --help`
+
 ### Huffman coding
 ``` bash
 $ python huffman_encode.py saves/model_after_weight_sharing.ptmodel
@@ -60,10 +65,30 @@ This command
 - Saves each weight to `encodings/` folder
 - Prints statistics for improvement
 
+For more, type `python huffman_encode.py --help`
+
+## Comparison
+``` bash
+$ python compare_stages.py
+```
+
+This command
+- Runs through all saved models (which thus need to be already compiled)
+- Prints all relevant results for the different stages of the deep compression
+
+For more, type `python huffman_encode.py --help`
+
+## Huffman Decoding
+``` bash
+$ python compare_stages.py
+```
+
+This command
+- Retrieves a `.ptmodel` file from  the binary encodings contained in the `encodings/` directory
 
 
 ## Note
-Note that I didn’t apply pruning nor weight sharing nor Huffman coding  for bias values. Maybe it’s better if I apply those to the biases as well, I haven’t try this out yet.
+Note that no pruning nor weight sharing nor Huffman coding were applied for bias values. Maybe it’s better if those are applied to the biases as well, it wasn't tried out yet.
 
-Note that this work was done when I was employed at http://nota.ai
+Note that this work was done when the original developer (github.com/mightydeveloper) was employed at http://nota.ai
 

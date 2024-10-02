@@ -1,4 +1,5 @@
 import argparse
+import subprocess
 
 import pruning
 import weight_share
@@ -34,8 +35,11 @@ args = parser.parse_args()
 print(f"Model: {args.model}")
 
 pruning()
+
 args.model = "saves/model_after_retraining.ptmodel"
 weight_share()
+
 args.model = "saves/model_after_weight_sharing"
 huffman_encode()
+
 compare_stages()

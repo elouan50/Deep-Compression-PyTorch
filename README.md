@@ -33,6 +33,12 @@ For ease of use, were added:
 ## Usage
 Here you find usage recommandations for all three stages of the deep compression described in the paper. Please follow them in the given order.
 
+### All in One
+``` bash
+$ python deep_compressing.py
+```
+
+
 ### Pruning
 ``` bash
 $ python pruning.py
@@ -77,7 +83,7 @@ This command
 
 For more, type `python huffman_encode.py --help`
 
-## Comparison
+### Comparison
 ``` bash
 $ python compare_stages.py
 ```
@@ -88,7 +94,7 @@ This command
 
 For more, type `python compare_stages.py --help`
 
-## Huffman Decoding
+### Huffman Decoding
 ``` bash
 $ python huffman_decode.py
 ```

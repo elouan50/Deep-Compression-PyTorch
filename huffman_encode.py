@@ -31,7 +31,6 @@ parser.add_argument('--sensitivity', type=float, default=2,
 parser.add_argument('--output', default='saves/model_after_weight_sharing.ptmodel', type=str,
                     help='path to model output')
 args = parser.parse_args()
-args = parser.parse_args()
 
 use_cuda = not args.no_cuda and torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else 'cpu')

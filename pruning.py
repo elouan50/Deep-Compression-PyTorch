@@ -17,7 +17,7 @@ os.makedirs('saves', exist_ok=True)
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST pruning from deep compression paper')
 parser.add_argument('model', type=str,
-                    help='saved quantized model')
+                    help='model to use')
 parser.add_argument('--stats', action='store_true', default=False,
                     help='print stats of use')
 parser.add_argument('--batch-size', type=int, default=50, metavar='N',

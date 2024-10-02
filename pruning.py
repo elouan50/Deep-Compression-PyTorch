@@ -10,7 +10,6 @@ from torchvision import datasets, transforms
 from tqdm import tqdm
 
 from net.models import LeNet
-from net.quantization import apply_weight_sharing
 import util
 
 os.makedirs('saves', exist_ok=True)

@@ -25,7 +25,7 @@ util.test(model, use_cuda)
 
 # Weight sharing
 apply_weight_sharing(model)
-print('accuacy after weight sharing')
+print('accuracy after weight sharing')
 util.test(model, use_cuda)
 
 # Save the new model

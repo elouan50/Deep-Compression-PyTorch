@@ -22,7 +22,7 @@ class LeNet(PruningModule):
 class LeNet_5(PruningModule):
     def __init__(self, mask=False):
         super(LeNet_5, self).__init__()
-        linear = MaskedLinear if mask else Linear
+        linear = MaskedLinear if mask else nn.Linear
         self.conv1 = nn.Conv2d(1, 6, kernel_size=(5, 5))
         self.conv2 = nn.Conv2d(6, 16, kernel_size=(5, 5))
         self.conv3 = nn.Conv2d(16, 120, kernel_size=(5,5))

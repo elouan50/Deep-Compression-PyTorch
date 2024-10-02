@@ -11,7 +11,7 @@ from scipy.sparse import csr_matrix, csc_matrix
 Node = namedtuple('Node', 'freq value left right')
 Node.__lt__ = lambda x, y: x.freq < y.freq
 
-def huffman_encode(arr, prefix, save_dir='./'):
+def huffman_encode(arr, prefix, save_dir='./', stats=False):
     """
     Encodes numpy array 'arr' and saves to `save_dir`
     The names of binary files are prefixed with `prefix`
@@ -58,11 +58,11 @@ def huffman_encode(arr, prefix, save_dir='./'):
 
     # Dump data
     data_encoding = ''.join(value2code[convert_map[dtype](value)] for value in np.nditer(arr))
-    datasize = dump(data_encoding, directory/f'{prefix}.bin')
+    datasize = dump(data_encoding, directory/f'{prefix}.bin', stats)
 
     # Dump codebook (huffman tree)
     codebook_encoding = encode_huffman_tree(root, dtype)
-    treesize = dump(codebook_encoding, directory/f'{prefix}_codebook.bin')
+    treesize = dump(codebook_encoding, directory/f'{prefix}_codebook.bin', stats)
 
     return treesize, datasize
 
@@ -137,7 +137,7 @@ def decode_huffman_tree(code_str, dtype):
 
 
 # My own dump / load logics
-def dump(code_str, filename):
+def dump(code_str, filename, stats=False):
     """
     code_str : string of either '0' and '1' characters
     this function dumps to a file
@@ -155,8 +155,9 @@ def dump(code_str, filename):
     byte_arr = bytearray(int(code_str[i:i+8], 2) for i in range(0, len(code_str), 8))
 
     # Dump to a file
-    with open(filename, 'wb') as f:
-        f.write(byte_arr)
+    if not(stats):
+        with open(filename, 'wb') as f:
+            f.write(byte_arr)
     return len(byte_arr)
 
 
@@ -201,7 +202,7 @@ def reconstruct_indptr(diff):
 
 
 # Encode / Decode models
-def huffman_encode_model(model, directory='encodings/'):
+def huffman_encode_model(model, directory='encodings/', stats=False):
     os.makedirs(directory, exist_ok=True)
     original_total = 0
     compressed_total = 0
@@ -217,9 +218,9 @@ def huffman_encode_model(model, directory='encodings/'):
             mat = csr_matrix(weight) if shape[0] < shape[1] else csc_matrix(weight)
 
             # Encode
-            t0, d0 = huffman_encode(mat.data, name+f'_{form}_data', directory)
-            t1, d1 = huffman_encode(mat.indices, name+f'_{form}_indices', directory)
-            t2, d2 = huffman_encode(calc_index_diff(mat.indptr), name+f'_{form}_indptr', directory)
+            t0, d0 = huffman_encode(mat.data, name+f'_{form}_data', directory, stats)
+            t1, d1 = huffman_encode(mat.indices, name+f'_{form}_indices', directory, stats)
+            t2, d2 = huffman_encode(calc_index_diff(mat.indptr), name+f'_{form}_indptr', directory, stats)
 
             # Print statistics
             original = mat.data.nbytes + mat.indices.nbytes + mat.indptr.nbytes
@@ -229,7 +230,7 @@ def huffman_encode_model(model, directory='encodings/'):
         else: # bias
             # Note that we do not huffman encode bias
             bias = param.data.cpu().numpy()
-            bias.dump(f'{directory}/{name}')
+            bias.dump(f'{directory}/{name}', stats)
 
             # Print statistics
             original = bias.nbytes
@@ -266,5 +267,6 @@ def huffman_decode_model(model, directory='encodings/'):
             param.data = torch.from_numpy(mat.toarray()).to(dev)
         else:
             dev = param.device
-            bias = np.load(directory+'/'+name)
+            bias = np.load(directory+name, allow_pickle=True)
             param.data = torch.from_numpy(bias).to(dev)
+    return model

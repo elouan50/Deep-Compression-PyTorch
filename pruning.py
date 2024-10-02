@@ -16,6 +16,10 @@ os.makedirs('saves', exist_ok=True)
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST pruning from deep compression paper')
+parser.add_argument('model', type=str,
+                    help='saved quantized model')
+parser.add_argument('--stats', action='store_true', default=False,
+                    help='print stats of use')
 parser.add_argument('--batch-size', type=int, default=50, metavar='N',
                     help='input batch size for training (default: 50)')
 parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
@@ -34,6 +38,8 @@ parser.add_argument('--log', type=str, default='log.txt',
                     help='log file name')
 parser.add_argument('--sensitivity', type=float, default=2,
                     help="sensitivity value that is multiplied to layer's std in order to get threshold value")
+parser.add_argument('--output', default='saves/model_after_weight_sharing.ptmodel', type=str,
+                    help='path to model output')
 args = parser.parse_args()
 
 # Control Seed

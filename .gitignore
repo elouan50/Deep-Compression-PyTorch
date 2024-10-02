@@ -2,6 +2,7 @@
 data/
 encodings/
 saves/
+log.txt
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

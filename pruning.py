@@ -12,12 +12,9 @@ from tqdm import tqdm
 from net.models import LeNet
 import util
 
-os.makedirs('saves', exist_ok=True)
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST pruning from deep compression paper')
-parser.add_argument('model', type=str,
-                    help='model to use')
 parser.add_argument('--stats', action='store_true', default=False,
                     help='print stats of use')
 parser.add_argument('--batch-size', type=int, default=50, metavar='N',
@@ -42,6 +39,12 @@ parser.add_argument('--output', default='saves/model_after_weight_sharing.ptmode
                     help='path to model output')
 args = parser.parse_args()
 
+print(args)
+
+# Create saving directory
+os.makedirs(args.output, exist_ok=True)
+
+
 # Control Seed
 torch.manual_seed(args.seed)
 
@@ -58,24 +61,25 @@ else:
 kwargs = {'num_workers': 5, 'pin_memory': True} if use_cuda else {}
 train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('data', train=True, download=True,
-                   transform=transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ])),
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.1307,), (0.3081,))
+                ])),
     batch_size=args.batch_size, shuffle=True, **kwargs)
 test_loader = torch.utils.data.DataLoader(
     datasets.MNIST('data', train=False, transform=transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ])),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.1307,), (0.3081,))
+                ])),
     batch_size=args.test_batch_size, shuffle=False, **kwargs)
 
 
 # Define which model to use
 model = LeNet(mask=True).to(device)
 
-print(model)
-util.print_model_parameters(model)
+if args.stats:
+    print(model)
+    util.print_model_parameters(model)
 
 # NOTE : `weight_decay` term denotes L2 regularization loss term
 optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=0.0001)
@@ -131,24 +135,27 @@ print("--- Initial training ---")
 train(args.epochs)
 accuracy = test()
 util.log(args.log, f"initial_accuracy {accuracy}")
-torch.save(model, f"saves/initial_model.ptmodel")
-print("--- Before pruning ---")
-util.print_nonzeros(model)
+torch.save(model, args.output+"initial_model.ptmodel")
+if args.stats:
+    print("--- Before pruning ---")
+    util.print_nonzeros(model)
 
 # Pruning
 model.prune_by_std(args.sensitivity)
 accuracy = test()
 util.log(args.log, f"accuracy_after_pruning {accuracy}")
-print("--- After pruning ---")
-util.print_nonzeros(model)
+if args.stats:
+    print("--- After pruning ---")
+    util.print_nonzeros(model)
 
 # Retrain
 print("--- Retraining ---")
 optimizer.load_state_dict(initial_optimizer_state_dict) # Reset the optimizer
 train(args.epochs)
-torch.save(model, f"saves/model_after_retraining.ptmodel")
+torch.save(model, args.output+"model_after_retraining.ptmodel")
 accuracy = test()
 util.log(args.log, f"accuracy_after_retraining {accuracy}")
 
-print("--- After Retraining ---")
-util.print_nonzeros(model)
+if args.stats:
+    print("--- After Retraining ---")
+    util.print_nonzeros(model)

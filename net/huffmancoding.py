@@ -232,7 +232,8 @@ def huffman_encode_model(model, directory='encodings/', stats=False):
         else: # bias
             # Note that we do not huffman encode bias
             bias = param.data.cpu().numpy()
-            bias.dump(f'{directory}/{name}', stats)
+            if not(stats):
+                bias.dump(f'{directory}/{name}', stats)
 
             # Print statistics
             original = bias.nbytes

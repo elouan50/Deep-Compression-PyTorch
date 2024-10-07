@@ -2,7 +2,7 @@ import argparse
 import subprocess
 
 parser = argparse.ArgumentParser(description='Apply all deep compression steps to a model')
-parser.add_argument('--stats', action='store_true', default=False,
+parser.add_argument('--no-stats', action='store_true', default=False,
                     help='print stats of use')
 parser.add_argument('--model', type=str, default='LeNet100',
                     help='model to be used for training')
@@ -34,7 +34,6 @@ args = parser.parse_args()
 # Prune
 if args.no_cuda:
     subprocess.run(['python3', 'pruning.py',
-                    f'--stats=False',
                     f'--batch-size={args.batch_size}',
                     f'--test-batch-size={args.test_batch_size}',
                     f'--epochs={args.epochs}',
@@ -47,9 +46,7 @@ if args.no_cuda:
                     f'--output={args.output}'
                     ])
 else:
-    
     subprocess.run(['python3', 'pruning.py',
-                    f'--stats=False',
                     f'--batch-size={args.batch_size}',
                     f'--test-batch-size={args.test_batch_size}',
                     f'--epochs={args.epochs}',
@@ -65,39 +62,34 @@ else:
 if args.no_cuda:
     subprocess.run(['python3', 'weight_share.py',
                     f'{args.output}model_after_retraining.ptmodel',
-                    f'--stats=False',
                     f'--no-cuda={args.no_cuda}',
                     f'--output={args.output}model_after_weight_sharing.ptmodel'
                     ])
 else:
     subprocess.run(['python3', 'weight_share.py',
                     f'{args.output}model_after_retraining.ptmodel',
-                    f'--stats=False',
                     f'--output={args.output}model_after_weight_sharing.ptmodel'
                     ])
 
 # Huffman encode
 if args.no_cuda:
     subprocess.run(['python3', 'huffman_encode.py',
-                    f'{args.output}model_after_weight_sharing.ptmodel',
-                    f'--stats=False',
+                    f'{args.output}model_after_weight_sharing.ptmodel'
                     f'--no-cuda={args.no_cuda}'
                     ])
 else:
     subprocess.run(['python3', 'huffman_encode.py',
-                    f'{args.output}model_after_weight_sharing.ptmodel',
-                    f'--stats=False'
+                    f'{args.output}model_after_weight_sharing.ptmodel'
                     ])
 
 # Print stats
-if args.no_cuda:
-    if args.stats:
+if not(args.no_stats):
+    if args.no_cuda:
         subprocess.run(['python3', 'compare_stages.py',
                         f'--no-cuda={args.no_cuda}',
                         f'--path={args.output}'
                         ])
-else:
-    if args.stats:
+    else:
         subprocess.run(['python3', 'compare_stages.py',
                         f'--path={args.output}'
                         ])

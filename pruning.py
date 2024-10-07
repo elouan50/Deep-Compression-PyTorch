@@ -35,8 +35,8 @@ parser.add_argument('--log', type=str, default='log.txt',
                     help='log file name')
 parser.add_argument('--sensitivity', type=float, default=2,
                     help="sensitivity value that is multiplied to layer's std in order to get threshold value")
-parser.add_argument('--output', default='saves/model_after_weight_sharing.ptmodel', type=str,
-                    help='path to model output')
+parser.add_argument('--output', default='saves/', type=str,
+                    help='path to folder containing model outputs')
 args = parser.parse_args()
 
 print(args)

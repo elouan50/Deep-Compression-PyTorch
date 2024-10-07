@@ -8,7 +8,7 @@ This implementation implements three core methods in the paper - Deep Compressio
 
 ## Requirements
 Following packages are required for this project
-- >= Python 3.6
+- Python `>=3.6`
 - tqdm
 - numpy
 - pytorch, torchvision
@@ -32,6 +32,15 @@ For ease of use, were added:
 
 ## Usage
 Here you find usage recommandations for all three stages of the deep compression described in the paper. Please follow them in the given order.
+
+### All in One
+``` bash
+$ python deep_compressing.py
+```
+
+This command
+- Executes all three stages of deep compression
+- Prints statistics at the end, of how much each stage compressed
 
 ### Pruning
 ``` bash
@@ -77,7 +86,7 @@ This command
 
 For more, type `python huffman_encode.py --help`
 
-## Comparison
+### Comparison
 ``` bash
 $ python compare_stages.py
 ```
@@ -88,7 +97,7 @@ This command
 
 For more, type `python compare_stages.py --help`
 
-## Huffman Decoding
+### Huffman Decoding
 ``` bash
 $ python huffman_decode.py
 ```

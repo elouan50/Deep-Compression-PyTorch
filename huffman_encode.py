@@ -9,10 +9,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Huffman encode a quantized model')
     parser.add_argument('model', type=str,
                         help='saved quantized model')
-    parser.add_argument('--no-cuda', action='store_true', default=False,
-                        help='disables CUDA training')
     parser.add_argument('--stats', action='store_true', default=False,
                         help='print stats of use')
+    parser.add_argument('--no-cuda', action='store_true', default=False,
+                        help='disables CUDA training')
     args = parser.parse_args()
 
     use_cuda = not args.no_cuda and torch.cuda.is_available()
